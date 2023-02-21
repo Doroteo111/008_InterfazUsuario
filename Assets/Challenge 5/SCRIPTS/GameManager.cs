@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     //contorlara la instancion de los objetos, logica global y la dificultad
     public GameObject[] targetPrefabs;
-    private float minX = -3.75f;
+    private float minX = -3.75f; //puntos especificos
     private float minY = -3.75f;
     private float distanceBetweenSquares = 2.5f;
 
@@ -17,6 +18,7 @@ public class GameManager : MonoBehaviour
     public Vector3 randomPos;
 
     public TextMeshProUGUI scoreText;
+    public GameObject gameOverPanel;
     private int score;
 
 
@@ -28,6 +30,19 @@ public class GameManager : MonoBehaviour
         score = 0;
         scoreText.text = $"Score:  {score}";
 
+        gameOverPanel.SetActive(false); //que no aparezca
+
+    }
+
+    public void GameOver()
+    {
+        isGameOver = true;
+        gameOverPanel.SetActive(true); // aparezca al morir
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name); //recargar la escena actual, coge el nombre y lo recarga
     }
     private Vector3 RandomSpawnPosition() //cuantos saltos doy
     {
@@ -36,16 +51,16 @@ public class GameManager : MonoBehaviour
         return new Vector3(spawnPosX, spawnPosY, 0);
     }
 
-    private IEnumerator SpawnRandomTarget()
+    private IEnumerator SpawnRandomTarget() //Corrutina
     {
         while (!isGameOver)
         {
             yield return new WaitForSeconds(spawnRate); //Esperamos tiempo de aparicion
-            int randomIndex = Random.Range(0, targetPrefabs.Length); //que lemento haremos aparecer
+            int randomIndex = Random.Range(0, targetPrefabs.Length); //que elemento haremos aparecer
             randomPos = RandomSpawnPosition(); //en que cuadrado
-            while (targetPositionsInScene.Contains(randomPos))
+            while (targetPositionsInScene.Contains(randomPos)) //mientras comntenga una posicion, la posicionesta ocupada
             {
-                randomPos = RandomSpawnPosition();
+                randomPos = RandomSpawnPosition(); //busca otra posicion
             }
             Instantiate(targetPrefabs[randomIndex], randomPos,targetPrefabs[randomIndex].transform.rotation); //que, como
             targetPositionsInScene.Add(randomPos); //añadir posicion ocupada a la lista

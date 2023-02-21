@@ -30,8 +30,10 @@ public class Target : MonoBehaviour
         if (!gameManager.isGameOver){
             if (gameObject.CompareTag("Bad"))
             {
-                gameManager.isGameOver = true;
-            }else if (gameObject.CompareTag("Good"))
+                //gameManager.isGameOver = true;
+                gameManager.GameOver();
+            }
+            else if (gameObject.CompareTag("Good"))
             {
                 gameManager.UpdateScore(points);
             }
