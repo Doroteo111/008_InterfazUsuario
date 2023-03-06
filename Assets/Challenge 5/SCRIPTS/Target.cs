@@ -31,12 +31,29 @@ public class Target : MonoBehaviour
             if (gameObject.CompareTag("Bad"))
             {
                 //gameManager.isGameOver = true;
-                gameManager.GameOver();
+                //gameManager.GameOver();
+                if (gameManager.hasPowerupShield)
+                {
+                    gameManager.hasPowerupShield = false; //perder escudo
+
+                }
+                else 
+                {
+                    gameManager.MinusLife(); //pierdo una vida
+                }
+                
+              
             }
             else if (gameObject.CompareTag("Good"))
             {
                 gameManager.UpdateScore(points);
             }
+            else if (gameObject.CompareTag("Shield"))
+            {
+                gameManager.hasPowerupShield = true;
+            }
+
+
             Instantiate(explosionParticle, transform.position,explosionParticle.transform.rotation);
 
             Destroy(gameObject);

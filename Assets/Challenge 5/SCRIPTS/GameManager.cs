@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 
+
 public class GameManager : MonoBehaviour
 {
     //contorlara la instancion de los objetos, logica global y la dificultad
@@ -13,25 +14,37 @@ public class GameManager : MonoBehaviour
     private float distanceBetweenSquares = 2.5f;
 
     public bool isGameOver; //aparecer objeto
-    public float spawnRate = 2f;
+   
     public List<Vector3> targetPositionsInScene; //posiciones ocupadas en la regilla
-    public Vector3 randomPos;
+   
 
-    public TextMeshProUGUI scoreText;
-    public GameObject gameOverPanel;
+    public TextMeshProUGUI scoreText; //enseñar los puntos que obtienes
+    public GameObject gameOverPanel; //asignar los paneles
+    public GameObject startGamePanel;
+
+    public TextMeshProUGUI heartsText;
+
+    private Vector3 randomPos;
     private int score;
+    
+    private float spawnRate = 2f;
+    private int hearts = 3;
 
-
-    private void Start()
+    public bool hasPowerupShield;
+    
+   private void Start() //eliminamos esto, ya que el start esta en otro script, botones
     {
-        isGameOver = false;
+        gameOverPanel.SetActive(false);
+        startGamePanel.SetActive(true);
+        
+        /*isGameOver = false;
         StartCoroutine("SpawnRandomTarget");
     
         score = 0;
         scoreText.text = $"Score:  {score}";
 
         gameOverPanel.SetActive(false); //que no aparezca
-
+        */
     }
 
     public void GameOver()
@@ -71,4 +84,34 @@ public class GameManager : MonoBehaviour
         score += newPoints;
         scoreText.text = $"Score:  {score}";
     }
+
+    
+    public void StartGame(int difficulty) //resetaar las dificultades e iniciar la partida
+    {
+        isGameOver = false;
+
+        score = 0;
+        UpdateScore(0);//llamamos a la función
+
+        hearts = 3;
+        heartsText.text = $"Hearts:  {hearts}";
+
+        spawnRate /= difficulty;
+        StartCoroutine(SpawnRandomTarget());
+        startGamePanel.SetActive(false);
+        gameOverPanel.SetActive(false);
+
+    }
+
+    public void MinusLife()
+    {
+        hearts--;
+        heartsText.text = $"Hearts:  {hearts}";
+        if (hearts <= 0)
+        {
+           
+            GameOver();
+        }
+    }
+
 }
